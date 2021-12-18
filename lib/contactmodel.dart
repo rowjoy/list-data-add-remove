@@ -2,8 +2,8 @@ class ContactModel {
   String? name;
   String? number;
 
-  ContactModel(
+  ContactModel({
     this.name,
     this.number,
-  );
+  });
 }

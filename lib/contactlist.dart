@@ -17,8 +17,10 @@ class _ContactlistState extends State<Contactlist> {
   List<Contact> contacts = [];
   List<Contact> contactsfiltted = [];
   List<ContactModel> selectedcontact = [];
+  List<Contact> newlist = [];
   bool isselected = false;
   TextEditingController searchcontroller = TextEditingController();
+
   getcontact() async {
     List<Contact> _contacts =
         (await ContactsService.getContacts(withThumbnails: true)).toList();
@@ -55,6 +57,7 @@ class _ContactlistState extends State<Contactlist> {
   @override
   Widget build(BuildContext context) {
     bool issearch = searchcontroller.text.isNotEmpty;
+    print(newlist);
     return Scaffold(
       body: SafeArea(
         child: Container(
@@ -65,33 +68,34 @@ class _ContactlistState extends State<Contactlist> {
               Container(
                 child: CarouselSlider(
                   // ignore: prefer_const_literals_to_create_immutables
-                  items: selectedcontact.map((e) {
-                    return Container(
-                      margin: EdgeInsets.only(top: 6, bottom: 6),
-                      decoration: BoxDecoration(
-                        color: Colors.blue,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.shade100,
-                            spreadRadius: 5,
-                            blurRadius: 5,
-                            offset: Offset(0, 3),
+                  items: [
+                    for (int i = 0; i < newlist.length; i++)
+                      Container(
+                        margin: EdgeInsets.only(top: 6, bottom: 6),
+                        decoration: BoxDecoration(
+                          color: Colors.blue,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.shade100,
+                              spreadRadius: 5,
+                              blurRadius: 5,
+                              offset: Offset(0, 3),
+                            ),
+                          ],
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Container(
+                          margin: EdgeInsets.only(
+                            left: 10,
+                            right: 10,
                           ),
-                        ],
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Container(
-                        margin: EdgeInsets.only(
-                          left: 10,
-                          right: 10,
-                        ),
-                        child: ListTile(
-                          title: Text('${e.name}'),
-                          subtitle: Text('${e.number}'),
+                          child: ListTile(
+                            title: Text('${newlist[i].runtimeType}'),
+                            subtitle: Text('${newlist[i].runtimeType}'),
+                          ),
                         ),
                       ),
-                    );
-                  }).toList(),
+                  ],
                   options: CarouselOptions(
                     height: 92.0,
                     aspectRatio: 16 / 9,
@@ -124,7 +128,7 @@ class _ContactlistState extends State<Contactlist> {
                       Contact contact = issearch == true
                           ? contactsfiltted[index]
                           : contacts[index];
-                      print('${selectedcontact.length}');
+
                       return Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Container(
@@ -132,24 +136,24 @@ class _ContactlistState extends State<Contactlist> {
                             //selectedcontact ?? listtile a click korla data add hoba and aber click korla data remove hoba
                             onTap: () {
                               setState(() {
-                                if (selectedcontact.contains(ContactModel(
-                                    contact.displayName,
-                                    contact.phones!.elementAt(0).value))) {
-                                  selectedcontact.remove(ContactModel(
-                                      contact.displayName,
-                                      contact.phones!.elementAt(0).value));
+                                if (newlist.contains(contact)) {
+                                  newlist.remove(contact);
                                 } else {
-                                  selectedcontact.add(ContactModel(
-                                      contact.displayName,
-                                      contact.phones!.elementAt(0).value));
+                                  newlist.add(contact);
                                 }
                               });
                             },
-                            selectedTileColor: Colors.blue.withOpacity(0.5),
+
                             tileColor: Colors.black.withOpacity(0.5),
                             title: Text('${contact.displayName}'),
                             subtitle:
                                 Text('${contact.phones!.elementAt(0).value}'),
+                            trailing: newlist.contains(contact)
+                                ? Icon(
+                                    Icons.check_box,
+                                    color: Colors.green,
+                                  )
+                                : Icon(Icons.check_box_outline_blank),
                           ),
                         ),
                       );
