@@ -4,6 +4,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:contactlis/contactmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:contacts_service/contacts_service.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class Contactlist extends StatefulWidget {
   static const String path = "Contactlist";
@@ -140,6 +141,7 @@ class _ContactlistState extends State<Contactlist> {
                                   newlist.remove(contact);
                                 } else {
                                   newlist.add(contact);
+                                  
                                 }
                               });
                             },
